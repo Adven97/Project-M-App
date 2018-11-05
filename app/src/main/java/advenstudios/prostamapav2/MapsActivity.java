@@ -213,7 +213,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             textView.setText("Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
-                            dodajMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
+                            dodajNowyMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
                            // dodajMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
                           //  dodajMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
@@ -367,22 +367,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void dodajMarker( double geoLat, double geoLong, BitmapDescriptor myIcon){
-
-        BitmapDescriptor icon = myIcon;
-        LatLng other = new LatLng(geoLat,geoLong);
-        marker = mMap.addMarker(new MarkerOptions().position(other)
-                .title("You're here")
-                .snippet("")
-                .icon(icon));
-
-    }
-
     private void dodajNowyMarker( double geoLat, double geoLong, BitmapDescriptor myIcon){
 
 
         if(marker != null && markerNumber > 0){
-            marker.remove();
+            marker.remove();}
 
             BitmapDescriptor icon = myIcon;
             LatLng other = new LatLng(geoLat,geoLong);
@@ -391,10 +380,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .snippet("")
                     .icon(icon));
 
-          //  mMap.addMarker(marker);
         }
 
-    }
+
 
 
 

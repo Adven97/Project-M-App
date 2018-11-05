@@ -31,4 +31,23 @@
         android:text="Start the Mapp"
         />
 
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="99dp"
+        android:text="Register" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/registerButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="80dp"
+        android:text="Login" />
+
 </RelativeLayout>
