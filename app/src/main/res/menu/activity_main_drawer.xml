@@ -5,27 +5,18 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/action_mode_bar"
+            android:title="Find new friend" />
+        <item
             android:id="@+id/nav_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:title="Tools" />
+            android:title="Track your friend" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Options">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:title="Send" />
+                android:id="@+id/nav_manage"
+                android:title="Settings" />
         </menu>
     </item>
 
