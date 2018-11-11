@@ -17,10 +17,10 @@
         android:background="@drawable/border"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="First Name" />
+        android:hint="E-Mail" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/editText2"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/editText"

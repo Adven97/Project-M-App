@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +29,14 @@ public class LoginActivity extends AppCompatActivity {
 
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                EditText mail = (EditText)findViewById(R.id.editText);
+                EditText pass = (EditText)findViewById(R.id.editText2);
+
+                String email = mail.getText().toString();
+                String password = pass.getText().toString();
+
+                //////////////INSERT TO DB /////////////
 
                 GPSStatus();
                 intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);

@@ -7,7 +7,7 @@
     >
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/fName"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -20,7 +20,7 @@
         android:hint="First Name" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/lastName"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/editText"
@@ -33,7 +33,7 @@
         android:hint="Last Name" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/email"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/editText"
@@ -46,7 +46,7 @@
         android:hint="E-mail" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/pass"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/editText"
@@ -59,7 +59,7 @@
         android:inputType="textPassword" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/pass2"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/editText4"
