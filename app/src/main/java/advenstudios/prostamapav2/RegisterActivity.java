@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RegisterActivity extends AppCompatActivity {
 
     Button mButton, cancelButton;
+    TextView textView;
     Context context;
     Intent intent1;
     LocationManager locationManager ;
@@ -33,9 +36,10 @@ public class RegisterActivity extends AppCompatActivity {
         context = getApplicationContext();
         mButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
+        textView = (TextView) findViewById(R.id.textView);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://testowy-spring-boot-xd.herokuapp.com")
+                .baseUrl("https://tranquil-hollows-66538.herokuapp.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -60,17 +64,26 @@ public class RegisterActivity extends AppCompatActivity {
                 //////////////INSERT TO DB /////////////
 
                 User user = new User(firstName,lastName,email,password);
-                Call<User> createCall = service.create(user);
+                Call<User> createCall = service.createe(user);
+              //  Call<User> createCall = service.create(email,password);
                 createCall.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> _, Response<User> resp) {
-                        User newUser = resp.body();
 
+                        try {
+                            User newUser = resp.body();
+                            textView.setText("Created user " + newUser.email);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            textView.setText(e.getMessage());
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<User> _, Throwable t) {
                         t.printStackTrace();
+                        textView.setText("nie wyszlo " );
                     }
                 });
 
