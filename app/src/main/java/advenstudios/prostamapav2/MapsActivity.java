@@ -88,8 +88,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     PendingResult<LocationSettingsResult> result;
     final static int REQUEST_LOCATION = 199;
 
-    LatLng other = new LatLng(geoLat,geoLong);
-
     Marker marker;
 
     private DrawerLayout mDrawerLayout;
@@ -103,16 +101,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
-       /* Thread t=new Thread(){ @Override public void run(){
-            while(!isInterrupted()){
-                try { Thread.sleep(1000);
-                     runOnUiThread(new Runnable()
-                     { @Override public void run() {
-
-                     }
-                     }); } catch (InterruptedException e) {} } } };
-        t.start(); */
 
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_maps);
@@ -179,7 +167,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
-
                         return true;
                     }
                 });
@@ -193,8 +180,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
 
@@ -329,22 +314,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             dodajNowyMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
                           //  dodajNowyMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
                             markerNumber++;
-                         /*   BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.emoji);
-                            LatLng other = new LatLng(geoLat,geoLong);
-                            MarkerOptions markerOptions = new MarkerOptions().position(other)
-                                    .title("You're here")
-                                    .snippet("")
-                                    .icon(icon);
-                            mMap.addMarker(markerOptions);
-
-
-                            BitmapDescriptor icon2 = BitmapDescriptorFactory.fromResource(R.drawable.stonog);
-                            LatLng other2 = new LatLng(geoLat+0.0032282,geoLong-0.000013);
-                            MarkerOptions markerOptions2 = new MarkerOptions().position(other2)
-                                    .title("You're here")
-                                    .snippet("")
-                                    .icon(icon2);
-                            mMap.addMarker(markerOptions2);*/
 
                         }
                         else {
