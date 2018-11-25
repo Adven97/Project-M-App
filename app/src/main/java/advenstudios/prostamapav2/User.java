@@ -7,35 +7,35 @@ public class User {
     @SerializedName("id")
     int id;
 
-    @SerializedName("firstName")
-    String fName;
+    @SerializedName("name")
+    String name;
 
     @SerializedName("lastName")
     String lastName;
 
-    @SerializedName("password")
-    String password;
+    @SerializedName("passwordHash")
+    String passwordHash;
 
     @SerializedName("email")
     String email;
 
-    public User(int id, String fName, String lastName, String email, String password ) {
+    public User(int id, String name, String lastName, String email, String password ) {
         this.id = id;
-        this.fName = fName;
+        this.name = name;
         this.lastName = lastName;
-        this.password = password;
+        this.passwordHash = password;
         this.email = email;
     }
 
-    public User(String fName, String lastName, String email, String password ) {
-        this.fName = fName;
+    public User(String name, String lastName, String email, String password ) {
+        this.name = name;
         this.lastName = lastName;
-        this.password = password;
+        this.passwordHash = password;
         this.email = email;
     }
 
     public User(String email, String password ) {
-        this.password = password;
+        this.passwordHash = password;
         this.email = email;
     }
 

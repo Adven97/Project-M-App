@@ -39,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="75dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="20dp"
         android:text="Confirm" />
 
     <Button
@@ -49,6 +49,17 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/confirmButton"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="2dp"
         android:text="Cancel" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="369dp"
+        android:layout_height="151dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-119dp"
+        android:layout_marginBottom="74dp"
+        android:layout_toEndOf="@+id/cancelButton"
+        android:text="TextView" />
 </RelativeLayout>
