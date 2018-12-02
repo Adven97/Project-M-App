@@ -1,12 +1,15 @@
 package advenstudios.prostamapav2;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,8 +51,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static advenstudios.prostamapav2.LoginActivity.em;
+import static advenstudios.prostamapav2.RegisterActivity.email;
+import static advenstudios.prostamapav2.LoginActivity.ps;
+import static advenstudios.prostamapav2.RegisterActivity.pss;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -78,7 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    TextView textView;
+    TextView textView, ttt;
     int markerNumber=0;
 
     LocationRequest mLocationRequest;
@@ -90,10 +103,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private DrawerLayout mDrawerLayout;
 
+    String firstName="Please";
+    String lastName="wait";
+
+    ConnectionClass connectionClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        connectionClass = new ConnectionClass();
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -112,6 +131,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         textView = (TextView) findViewById(R.id.textView);
+       // ttt = (TextView) findViewById(R.id.tttt);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -137,7 +157,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onDrawerOpened(View drawerView) {
-                        // Respond when the drawer is opened
+                        TextView myNameView = (TextView)findViewById(R.id.tttt);
+                     //   myNameView.setText("Hello there! "+em);
+                        DoQuery dq = new DoQuery();
+                        dq.execute("");
+                        myNameView.setText("Hello there! "+firstName+" "+ lastName);
+
                     }
 
                     @Override
@@ -263,7 +288,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(geoLat,geoLong), DEFAULT_ZOOM));
 
-                            textView.setText("Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
+                           // String xd = em;
+                            textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
@@ -307,7 +333,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             geoLat = mLastKnownLocation.getLatitude();
                             geoLong = mLastKnownLocation.getLongitude();
 
-                            textView.setText("Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
+                            textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
                           //  dodajNowyMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
@@ -430,4 +456,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+    public class DoQuery extends AsyncTask<String,String,String>
+    {
+
+        String z="";
+        boolean isSuccess=false;
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String query="";
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    z = "nie udalo sie  połaczyć niestety xD";
+                }
+                else {
+                    if(ps=="log") {
+                        query = " select * from user_db where email='" + em + "'";
+                    }
+                    else if(pss=="reg") {
+                        query = " select * from user_db where email='" + email + "'";
+                    }
+                        Statement stmt = con.createStatement();
+                        ResultSet rs = stmt.executeQuery(query);
+
+                        while (rs.next())
+                        {
+                            firstName = rs.getString(2);
+                            lastName = rs.getString(3);
+
+                        }
+                    }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                z = "Exception wyjebalo: "+ex;
+            }
+
+            return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+          //  Toast.makeText(getBaseContext(),"bum "+z,Toast.LENGTH_LONG).show();
+
+
+        }
+    }
+
 }

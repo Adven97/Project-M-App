@@ -1,37 +1,43 @@
 package advenstudios.prostamapav2;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import com.microsoft.windowsazure.mobileservices.*;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    Button mButton, cancelButton;
     TextView textView;
+    Button mButton, cancelButton;
     Context context;
     Intent intent1;
-    LocationManager locationManager ;
-    boolean GpsStatus, statusChanged ;
-    private MobileServiceClient mmClient;
+    LocationManager locationManager;
+    boolean GpsStatus, statusChanged;
+    ProgressDialog progressDialog;
+    static String email, password, finame, lastNme, passw2;
+    ConnectionClass connectionClass;
+    boolean openedReg;
+    static String pss;
+    //static String pss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,130 +49,36 @@ public class RegisterActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancelButton);
         textView = (TextView) findViewById(R.id.textView);
 
-        /*Retrofit retrofit = new Retrofit.Builder()
-              //  .baseUrl("https://tranquil-hollows-66538.herokuapp.com")
-                .baseUrl("https://herku-test-postgres.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final UserService service = retrofit.create(UserService.class);*/
-
-        try {
-            mmClient = new MobileServiceClient("https://mylocapp.azurewebsites.net", this);
-            User2 usr = new User2();
-            usr.firstName = "elo";
-            mmClient.getTable(User2.class).insert(usr, new TableOperationCallback<User2>() {
-                @Override
-                public void onCompleted(User2 entity, Exception exception, ServiceFilterResponse response) {
-                    if (exception == null) {
-                        textView.setText("SZTYWNIUTKO ");
-                    } else {
-                        textView.setText("CHUJOWIO ");
-                    }
-                }
-            });
-        }
-        catch (Exception e){}
-
-
+        connectionClass = new ConnectionClass();
+        //  getSupportActionBar().hide();
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        //      WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        progressDialog = new ProgressDialog(this);
+        openedReg=false;
 
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                EditText fName =(EditText) findViewById(R.id.fName);
-                EditText name =(EditText)findViewById(R.id.lastName);
-                EditText em =(EditText) findViewById(R.id.email);
-                EditText pass =(EditText) findViewById(R.id.pass);
-                EditText pass2 =(EditText) findViewById(R.id.pass2);
+                Doregister doregister = new Doregister();
+                doregister.execute("");
 
-                final String firstName = fName.getText().toString();
-                String lastName = name.getText().toString();
-                String email = em.getText().toString();
-                String password = pass.getText().toString();
-                String password2 = pass2.getText().toString();
+                EditText fname = (EditText) findViewById(R.id.fName);
+                EditText lastname = (EditText) findViewById(R.id.lastName);
+                EditText mail = (EditText) findViewById(R.id.email);
+                EditText pass = (EditText) findViewById(R.id.pass);
+                EditText pass2 = (EditText) findViewById(R.id.pass2);
 
-
-
-
+                finame = fname.getText().toString();
+                lastNme = lastname.getText().toString();
+                email = mail.getText().toString();
+                password = pass.getText().toString();
+                passw2 = pass2.getText().toString();
 
                 //////////////INSERT TO DB /////////////
 
-              /*  Call<ResponseBody> createCall = service.hello();
-               // User user = new User(firstName,lastName,email,password);
-               // Call<User> createCall = service.createe(user);
-              //  Call<User> createCall = service.create(email,password);
-                createCall.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> _, Response<ResponseBody> resp) {
 
-                        try {
-                           // User newUser = resp.body();
-                            textView.setText("Created user " + resp.body().string());
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            textView.setText(e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> _, Throwable t) {
-                        t.printStackTrace();
-                        textView.setText("nie wyszlo " );
-                    }
-                });
-
-
-              /*   User user = new User(email,password);
-                 Call<User> createCall = service.createe(user);
-                //  Call<User> createCall = service.create(email,password);
-                createCall.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> _, Response<User> resp) {
-
-                        try {
-                             User newUser = resp.body();
-                            textView.setText("Created user " + newUser.passwordHash);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            textView.setText(e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> _, Throwable t) {
-                        t.printStackTrace();
-                        textView.setText("nie wyszlo " );
-                    }
-                });       */
-
-                ////////////////////////////////////////
-
-                GPSStatus();
                 intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 
-                if (GpsStatus == true) {
-
-                    if (statusChanged) {
-                        Thread t = new Thread();
-                        try {
-                            t.sleep(9000);
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                            t.interrupt();
-                        } catch (InterruptedException e) {}
-                    }
-                    else {
-
-                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                    }
-                }
-
-                else {
-
-                    startActivity(intent1);
-                    statusChanged=true;
-                }
             }
         });
 
@@ -178,9 +90,134 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void GPSStatus(){
-        locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+    public void GPSStatus() {
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    public class Doregister extends AsyncTask<String, String, String> {
+
+        String z = "";
+        boolean isSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    z = "Nie udało się połączyć";
+                } else {
+                    if (finame.length() > 0 && lastNme.length() > 0 && email.length() > 0 && password.length() > 0 && passw2.length() > 0) {
+                        if (password.equals(passw2)) {
+                            if (password.length() >= 8) {
+                                 if(isAvailable()){
+                                String query = "INSERT INTO user_db (firstName, lastName, email, password) VALUES ('" + finame + "', '" + lastNme + "','" + email + "', '" + password + "')";
+                                //String query="INSERT INTO TodoItem (firstName, lastName) VALUES ('email', 'password+')";
+                                Statement stmt = con.createStatement();
+                                stmt.executeUpdate(query);
+                                openedReg=true;
+                                pss="reg";
+                                z = "Rejestracja pomyślna";
+                                GPSStatus();
+                                if (GpsStatus == true) {
+
+                                    if (statusChanged) {
+                                        Thread t = new Thread();
+                                        try {
+                                            t.sleep(9000);
+                                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                            t.interrupt();
+                                        } catch (InterruptedException e) {
+                                        }
+                                    } else {
+
+                                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                    }
+                                } else {
+
+                                    startActivity(intent1);
+                                    statusChanged = true;
+                                }
+                            }
+                                 else {
+                                     z = "Ten email jest juz zajety";
+                                 }
+                            }
+                            else {
+                                z = "Hasło musi mieć minimum 8 znaków";
+                            }
+                        } else {
+                            z = "Hasła są nie zgodne";
+                        }
+                    } else {
+                        z = "Pola nie mogą być puste";
+                    }
+
+                }
+            } catch (Exception ex) {
+                isSuccess = false;
+                z = "Exceptions: " + ex;
+            }
+            // textView.setText(z);
+            return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            Toast.makeText(getBaseContext(), "" + z, Toast.LENGTH_LONG).show();
+
+            if (isSuccess) {
+                //startActivity(new Intent(MainActivity.this,Main2Activity.class));
+                Toast.makeText(getBaseContext(), "nooo jest git jest git ", Toast.LENGTH_LONG).show();
+            }
+
+            progressDialog.hide();
+        }
+
+        boolean isAvailable() {
+
+            String em="nic";
+            boolean av=true;
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                   // z = "Nie udało się połączyć";
+                } else {
+                    String query = " select * from user_db where email='" + email + "'";
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+
+                    if(rs==null){
+                        av=true;
+                    }
+                    else{
+                       while (rs.next()) {
+                            em = rs.getString(4);
+                            //    ps = rs.getString(5);
+
+                            if (em.equals(email)) {
+                                av=false;
+                            }
+                            else
+                                av=true;
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex){}
+
+            return av;
+        }
+    }
 }
+
+
