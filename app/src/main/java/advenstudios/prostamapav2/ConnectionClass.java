@@ -26,7 +26,7 @@ public class ConnectionClass {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            //textView.setText("chuj "+e.getMessage().toString());
+       //     textView.setText("chuj "+e.getMessage().toString());
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class ConnectionClass {
 
         } catch (Exception e) {
             e.printStackTrace();
-          //  textView.setText(" c h uj 434 "+e.getMessage());
+           //textView.setText(" c h uj 434 "+e.getMessage());
         }
         //Toast.makeText(getBaseContext(),""+wiad,Toast.LENGTH_LONG).show();
         return conn;

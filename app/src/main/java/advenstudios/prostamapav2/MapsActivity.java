@@ -24,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CameraPosition mCameraPosition;
     double geoLong, geoLat;
 
+    Thread t;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -163,6 +165,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         dq.execute("");
                         myNameView.setText("Hello there! "+firstName+" "+ lastName);
 
+
+
                     }
 
                     @Override
@@ -249,7 +253,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getDeviceLocation();
 
         // Get the current location of the device and set the position of the map.
-        Thread t=new Thread(){
+
+        t=new Thread(){
             @Override public void run(){
                 while(!isInterrupted()){
                     try { Thread.sleep(1000); //1000ms = 1 sec
@@ -454,6 +459,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void connectFriends(MenuItem item) {
+        try {
+            t.interrupt();
+            if(t.isInterrupted()) {
+                startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
+            }
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+            textView.setText("chuj i pizda: "+e.getMessage().toString());
+        }
 
     }
 
