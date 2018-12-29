@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                     else {
                         if (email.length()>0 && password.length()>0) {
 
-                            String query = " select * from user_db where email='" + email + "' and PASSWORD = '" + password + "'";
+                            String query = " select * from usrs2 where email='" + email + "' and PASWORD = '" + password + "'";
                             Statement stmt = con.createStatement();
                             ResultSet rs = stmt.executeQuery(query);
 

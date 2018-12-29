@@ -118,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (password.equals(passw2)) {
                             if (password.length() >= 8) {
                                  if(isAvailable()){
-                                String query = "INSERT INTO user_db (firstName, lastName, email, password) VALUES ('" + finame + "', '" + lastNme + "','" + email + "', '" + password + "')";
+                                String query = "INSERT INTO usrs2 VALUES ('" + finame + "', '" + lastNme + "','" + email + "', '" + password + "', 'false', 66.788974, 9.457503)";
                                 //String query="INSERT INTO TodoItem (firstName, lastName) VALUES ('email', 'password+')";
                                 Statement stmt = con.createStatement();
                                 stmt.executeUpdate(query);
@@ -191,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (con == null) {
                    // z = "Nie udało się połączyć";
                 } else {
-                    String query = " select * from user_db where email='" + email + "'";
+                    String query = " select * from usrs2 where email='" + email + "'";
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
 

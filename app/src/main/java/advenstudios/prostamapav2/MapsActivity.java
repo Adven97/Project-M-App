@@ -64,6 +64,7 @@ import static advenstudios.prostamapav2.LoginActivity.em;
 import static advenstudios.prostamapav2.RegisterActivity.email;
 import static advenstudios.prostamapav2.LoginActivity.ps;
 import static advenstudios.prostamapav2.RegisterActivity.pss;
+import static advenstudios.prostamapav2.SearchFriendActivity.friendsEmail;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -75,7 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CameraPosition mCameraPosition;
     double geoLong, geoLat;
 
-    Thread t;
+    Thread tMyLoc, tFriendLoc;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -102,11 +103,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     final static int REQUEST_LOCATION = 199;
 
     Marker marker;
+    Marker friendMarker;
 
     private DrawerLayout mDrawerLayout;
 
     String firstName="Please";
     String lastName="wait";
+    double friendLong =61.2324;
+    double friendLat =29.9752;
 
     ConnectionClass connectionClass;
 
@@ -254,7 +258,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Get the current location of the device and set the position of the map.
 
-        t=new Thread(){
+        tMyLoc=new Thread(){
             @Override public void run(){
                 while(!isInterrupted()){
                     try { Thread.sleep(1000); //1000ms = 1 sec
@@ -262,9 +266,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                              @Override public void run() {
 
                                  getDeviceChangedLocation();
+                                // getFriendLocation();
 
                              } }); } catch (InterruptedException e) {} } } };
-                            t.start();
+        tMyLoc.start();
+
+        tFriendLoc =new Thread(){
+            @Override public void run(){
+                while(!isInterrupted()){
+                    try { Thread.sleep(1000); //1000ms = 1 sec
+                        runOnUiThread(new Runnable() {
+                            @Override public void run() {
+
+                                 getFriendLocation();
+
+                            } }); } catch (InterruptedException e) {} } } };
+        tFriendLoc.start();
 
     }
 
@@ -288,7 +305,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             geoLat = mLastKnownLocation.getLatitude();
                             geoLong = mLastKnownLocation.getLongitude();
-                           // String znacznik = "R.drwaable.sak";
+                            InsertPosToDb insertPosToDb = new InsertPosToDb();
+                            insertPosToDb.execute("");
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(geoLat,geoLong), DEFAULT_ZOOM));
@@ -337,6 +355,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             geoLat = mLastKnownLocation.getLatitude();
                             geoLong = mLastKnownLocation.getLongitude();
+                            InsertPosToDb insertPosToDb = new InsertPosToDb();
+                            insertPosToDb.execute("");
 
                             textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
@@ -355,6 +375,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
             }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getFriendLocation() {
+
+        try {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            FriendPos fpos = new FriendPos();
+                            fpos.execute("");
+
+
+                            dodajFriendMarker(friendLat,friendLong, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
+                            //  dodajNowyMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
+                            markerNumber++;
+
+                        }
+                        else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(bauty, DEFAULT_ZOOM));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
@@ -439,13 +492,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(marker != null && markerNumber > 0){
             marker.remove();}
 
-            BitmapDescriptor icon = myIcon;
-            LatLng other = new LatLng(geoLat,geoLong);
-             marker = mMap.addMarker(new MarkerOptions().position(other)
-                    .title("You're here")
-                    .snippet("")
-                    .icon(icon));
-        }
+        BitmapDescriptor icon = myIcon;
+        LatLng other = new LatLng(geoLat,geoLong);
+        marker = mMap.addMarker(new MarkerOptions().position(other)
+                .title("You're here")
+                .snippet("")
+                .icon(icon));
+    }
+
+    private void dodajFriendMarker( double geoLat, double geoLong, BitmapDescriptor myIcon){
+
+        if(friendMarker != null && markerNumber > 0){
+            friendMarker.remove();}
+
+        BitmapDescriptor icon = myIcon;
+        LatLng other = new LatLng(geoLat,geoLong);
+        friendMarker = mMap.addMarker(new MarkerOptions().position(other)
+                .title("Your friend is here")
+                .snippet("")
+                .icon(icon));
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -464,10 +530,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void connectFriends(MenuItem item) {
         try {
-            t.interrupt();
-            if(t.isInterrupted()) {
-                startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
+            try{
+               // tMyLoc.interrupt();
+             //   if(tMyLoc.isInterrupted()) {
+                    startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
+              //  }
             }
+            catch (Exception e){
+                e.printStackTrace();
+                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+            }
+
         }
         catch (Exception e){
 
@@ -477,8 +550,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public class DoQuery extends AsyncTask<String,String,String>
-    {
+    public class DoQuery extends AsyncTask<String,String,String>{
 
         String z="";
         boolean isSuccess=false;
@@ -497,21 +569,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 else {
                     if(ps=="log") {
-                        query = " select * from user_db where email='" + em + "'";
+                        query = " select * from usrs2 where email='" + em + "'";
                     }
                     else if(pss=="reg") {
-                        query = " select * from user_db where email='" + email + "'";
+                        query = " select * from usrs2 where email='" + email + "'";
                     }
-                        Statement stmt = con.createStatement();
-                        ResultSet rs = stmt.executeQuery(query);
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
 
-                        while (rs.next())
-                        {
-                            firstName = rs.getString(2);
-                            lastName = rs.getString(3);
+                    while (rs.next())
+                    {
+                        firstName = rs.getString(2);
+                        lastName = rs.getString(3);
 
-                        }
                     }
+                }
             }
             catch (Exception ex)
             {
@@ -525,10 +597,101 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         protected void onPostExecute(String s) {
 
-          //  Toast.makeText(getBaseContext(),"bum "+z,Toast.LENGTH_LONG).show();
+        }
+    }
 
+    public class InsertPosToDb extends AsyncTask<String,String,String>{
+
+        String z="";
+        boolean isSuccess=false;
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String query="";
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    z = "nie udalo sie  połaczyć niestety xD";
+                }
+                else {
+
+                    if(ps=="log") {
+                        query ="update usrs2 set mylong ="+geoLong+", mylat ="+geoLat+" where email='" + em + "'";
+                    }
+                    else if(pss=="reg") {
+                        query ="update usrs2 set mylong ="+geoLong+", mylat ="+geoLat+" where email='" + email + "'";
+                    }
+
+
+                    Statement stmt = con.createStatement();
+                    stmt.executeUpdate(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                z = "Exception wyjebalo: "+ex;
+            }
+
+            return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
 
         }
     }
+
+
+    public class FriendPos extends AsyncTask<String,String,String>{
+
+        String z="";
+        boolean isSuccess=false;
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String query="";
+            String emailOfFriend =friendsEmail;
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    z = "nie udalo sie  połaczyć niestety xD";
+                }
+                else {
+                        query = " select mylat,mylong from usrs2 where email='"+emailOfFriend+"'";
+
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+
+                    while (rs.next())
+                    {
+                        friendLat = rs.getDouble(1);
+                        friendLong = rs.getDouble(2);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                z = "Exception wyjebalo: "+ex;
+            }
+
+            return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+        }
+    }
+
 
 }
