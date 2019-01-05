@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -115,6 +117,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double friendLat =29.9752;
 
     ConnectionClass connectionClass;
+    Button toggleButton;
+    boolean activeUsr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +144,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         textView = (TextView) findViewById(R.id.textView);
+
        // ttt = (TextView) findViewById(R.id.tttt);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -157,6 +162,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        toggleButton = findViewById(R.id.toggleButton);
+        toggleButton.setTextColor(Color.parseColor("#DC143C"));
+
+        activeUsr=false;
+        
         mDrawerLayout.addDrawerListener(
                 new DrawerLayout.DrawerListener() {
                     @Override
@@ -549,6 +560,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void onTButtonClick(View view) {
+
+        activeUsr = !activeUsr;
+        if(!activeUsr){
+            toggleButton.setTextColor(Color.parseColor("#DC143C"));
+            toggleButton.setText("Not Active");
+        }
+        else {
+            toggleButton.setTextColor(Color.parseColor("#00cc00"));
+            toggleButton.setText("Active");
+        }
+        SetActive setac = new SetActive();
+        setac.execute("");
+
+    }
+
     public class DoQuery extends AsyncTask<String,String,String>{
 
         String z="";
@@ -595,7 +622,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         protected void onPostExecute(String s) {
-
         }
     }
 
@@ -691,5 +717,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
-    
+
+    public class SetActive extends AsyncTask<String,String,String>{
+
+        String z="";
+        boolean isSuccess=false;
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String query="";
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    z = "nie udalo sie  połaczyć niestety xD";
+                }
+                else {
+                    if(ps=="log") {
+                        query = "update usrs2 set usrstatus='"+String.valueOf(activeUsr)+"' where email='" + em + "'";
+                    }
+                    else if(pss=="reg") {
+                        query = "update usrs2 set usrstatus='"+String.valueOf(activeUsr)+"' where email='" + email + "'";
+                    }
+                    Statement stmt = con.createStatement();
+                    stmt.executeUpdate(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                z = "Exception wyjebalo: "+ex;
+            }
+
+            return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+        }
+    }
+
 }
