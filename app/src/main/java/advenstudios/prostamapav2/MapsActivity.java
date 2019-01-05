@@ -2,6 +2,7 @@ package advenstudios.prostamapav2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -75,6 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     double geoLong, geoLat;
+    ProgressDialog progressDialog;
 
     Thread tMyLoc, tFriendLoc;
     // The entry point to the Fused Location Provider.
@@ -119,6 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
 
         connectionClass = new ConnectionClass();
+        progressDialog = new ProgressDialog(this);
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -531,8 +534,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void connectFriends(MenuItem item) {
         try {
             try{
-               // tMyLoc.interrupt();
-             //   if(tMyLoc.isInterrupted()) {
+                progressDialog.setMessage("Szukam ci przyjaciół, poczekaj");
+                progressDialog.show();
                     startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
               //  }
             }
