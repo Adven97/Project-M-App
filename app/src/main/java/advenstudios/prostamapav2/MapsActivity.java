@@ -314,13 +314,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(geoLat,geoLong), DEFAULT_ZOOM));
 
-                           // String xd = em;
                             textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
-                           // dodajMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
-                          //  dodajMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
                             markerNumber++;
 
                             //////ZAPISAC GDZIES TE WSP GEOGRAFICZNE
@@ -364,7 +361,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
-                          //  dodajNowyMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
+
                             markerNumber++;
 
                         }
@@ -395,9 +392,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             FriendPos fpos = new FriendPos();
                             fpos.execute("");
 
+                            dodajFriendMarker(friendLat,friendLong, BitmapDescriptorFactory.fromResource(R.drawable.alien_emoji));
 
-                            dodajFriendMarker(friendLat,friendLong, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
-                            //  dodajNowyMarker(geoLat+0.0032282,geoLong-0.000013, BitmapDescriptorFactory.fromResource(R.drawable.stonog));
                             markerNumber++;
 
                         }
@@ -695,6 +691,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
-
-
+    
 }

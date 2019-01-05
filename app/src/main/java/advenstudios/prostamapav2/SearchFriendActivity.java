@@ -51,11 +51,6 @@ public class SearchFriendActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     UserAdapter adapter;
 
-//    String[] ;
-//    String[] lastNamee;
-//    String[] friendMail;
-//    String[] friendPassw;
-
     List<String> firstName;
     List<String> lastNamee;
     List<String> friendMail;
@@ -95,9 +90,6 @@ public class SearchFriendActivity extends AppCompatActivity {
         adapter = new UserAdapter(this, userArrayList);
         userList.setAdapter(adapter);
 
-      //  progressDialog.setMessage("Loading...");
-       // progressDialog.show();
-
         Thread t = new Thread();
         try {
             t.sleep(3000);
@@ -116,10 +108,8 @@ public class SearchFriendActivity extends AppCompatActivity {
             t.interrupt();
         } catch (InterruptedException e) {
         }
-        User userTest2=new User("Swiety", "mikolaj","mikolaj303@gmail.com", "jp100");
-      //   userArrayList.add(userTest2);
-         userArrayList.add(new User("adam","tomczak","atomczak30@gmail.com","pppp"));
 
+         userArrayList.add(new User("adam","tomczak","atomczak30@gmail.com","pppp"));
 
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -132,7 +122,6 @@ public class SearchFriendActivity extends AppCompatActivity {
         });
 
     }
-
 
     public void dodajKogos(View view) {
         try{
@@ -150,56 +139,7 @@ public class SearchFriendActivity extends AppCompatActivity {
 
     }
 
-    /* public class SelectUsers extends AsyncTask<String,String,String>
-    {
-        String z="komunikat";
-
-        boolean isSuccess=false;
-
-        @Override
-        protected void onPreExecute() {
-            //result.setText("Loading...");
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                userArrayList.add(userTest);
-                Connection con = connectionClass.CONN();
-                if (con == null) {
-                    z = "Connection failed";
-                    result.append("Connection failed");
-                } else {
-
-                    String query = " select * from user_db";
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery(query);
-
-                    user.setFirstName(rs.getString(2));
-                    user.setLastName(rs.getString(3));
-                    user.setEmail(rs.getString(4));
-                    userArrayList.add(user);
-
-                }
-
-            } catch (Exception ex) {
-                isSuccess = false;
-                z = "Exceptions: " + ex;
-                result.setText(z);
-            }
-
-            return z;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-        }
-    }*/
-
-
-    public class DoQuery extends AsyncTask<String,String,String>
+public class DoQuery extends AsyncTask<String,String,String>
     {
 
         String z="";
@@ -212,7 +152,6 @@ public class SearchFriendActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             String query="";
-            //String emai = "kubica@blyskawica.com";
 
             try {
                 Connection con = connectionClass.CONN();
@@ -220,15 +159,15 @@ public class SearchFriendActivity extends AppCompatActivity {
                     z = "nie udalo sie  połaczyć niestety xD";
                 }
                 else {
-//                    if(ps=="log") {
-//                      //  query = " select * from friendss where my_email='" + em + "'";
-//                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + em + "')";
-//                    }
-//                    else if(pss=="reg") {
-//                      //  query = " select * from friendss where my_email='" + email + "'";
-//                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + email + "')";
-//                    }
-                    query = "select * from usrs2 where email in (select friends_email from friendss where my_email='atomczak30@gmail.com')";
+                    if(ps=="log") {
+                      //  query = " select * from friendss where my_email='" + em + "'";
+                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + em + "')";
+                    }
+                    else if(pss=="reg") {
+                      //  query = " select * from friendss where my_email='" + email + "'";
+                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + email + "')";
+                    }
+                  //  query = "select * from usrs2 where email in (select friends_email from friendss where my_email='atomczak30@gmail.com')";
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
 
@@ -241,9 +180,6 @@ public class SearchFriendActivity extends AppCompatActivity {
                         friendPassw.add(rs.getString(5));
                         countFriends++;
                     }
-
-                   // userArrayList.add(new User("Swiety", "mikolaj","mikolaj303@gmail.com", "jp100"));
-                  //  adapter.notifyDataSetChanged();
 
                 }
             }
@@ -260,61 +196,7 @@ public class SearchFriendActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
 
             //  Toast.makeText(getBaseContext(),"bum "+z,Toast.LENGTH_LONG).show();
-
-
         }
     }
-
-
-/*
-
-    public class DoIt extends AsyncTask<String,String,String>
-    {
-
-        String z="komunikat";
-
-        boolean isSuccess=false;
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                Connection con = connectionClass.CONN();
-                if (con == null) {
-                       z = "nie udalo sie  płaczyć niestety xD";
-                } else {
-
-                    String query = " select * from user_db where lastname='kubica'";
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery(query);
-
-                    while (rs.next()) {
-                        firstName = rs.getString(2);
-                        lastNamee = rs.getString(3);
-
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                isSuccess = false;
-                z = "Exceptions: "+ex;
-            }
-            result.setText(z);
-            return z;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-        }
-    }*/
 
 }
