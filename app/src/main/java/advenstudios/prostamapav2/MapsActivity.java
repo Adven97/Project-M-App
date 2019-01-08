@@ -167,7 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         toggleButton.setTextColor(Color.parseColor("#DC143C"));
 
         activeUsr=false;
-        
+
         mDrawerLayout.addDrawerListener(
                 new DrawerLayout.DrawerListener() {
                     @Override
@@ -182,8 +182,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         DoQuery dq = new DoQuery();
                         dq.execute("");
                         myNameView.setText("Hello there! "+firstName+" "+ lastName);
-
-
 
                     }
 
@@ -545,6 +543,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 progressDialog.show();
                     startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
               //  }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+            }
+
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+            textView.setText("chuj i pizda: "+e.getMessage().toString());
+        }
+
+    }
+
+    public void searchForFriends(MenuItem item) {
+        try {
+            try{
+                progressDialog.setMessage("Prosze czekac");
+                progressDialog.show();
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                //  }
             }
             catch (Exception e){
                 e.printStackTrace();
