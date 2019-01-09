@@ -1,5 +1,6 @@
 package advenstudios.prostamapav2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -58,10 +59,7 @@ import com.google.android.gms.tasks.Task;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static advenstudios.prostamapav2.LoginActivity.em;
 import static advenstudios.prostamapav2.RegisterActivity.email;
@@ -78,7 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     double geoLong, geoLat;
-    ProgressDialog progressDialog;
+    static ProgressDialog progressDialogfromMap;
 
     Thread tMyLoc, tFriendLoc;
     // The entry point to the Fused Location Provider.
@@ -109,7 +107,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Marker marker;
     Marker friendMarker;
 
-    private DrawerLayout mDrawerLayout;
+    static DrawerLayout mDrawerLayout;
 
     String firstName="Please";
     String lastName="wait";
@@ -120,12 +118,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button toggleButton;
     boolean activeUsr;
 
+//    static boolean already1;
+//    static boolean already2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         connectionClass = new ConnectionClass();
-        progressDialog = new ProgressDialog(this);
+        progressDialogfromMap = new ProgressDialog(this);
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -160,6 +161,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.burger);
 
+//        already1=false;
+//        already2=false;
+
+        DoQuery dq = new DoQuery();
+        dq.execute("");
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -179,9 +185,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onDrawerOpened(View drawerView) {
                         TextView myNameView = (TextView)findViewById(R.id.tttt);
                      //   myNameView.setText("Hello there! "+em);
-                        DoQuery dq = new DoQuery();
-                        dq.execute("");
-                        myNameView.setText("Hello there! "+firstName+" "+ lastName);
+
+                        myNameView.setText("Hey there! "+firstName+" "+ lastName);
 
                     }
 
@@ -196,6 +201,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
         );
+        mDrawerLayout.closeDrawers();
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -432,7 +438,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
          * onRequestPermissionsResult.
          */
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+            android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
             mLocationPermissionGranted = true;
@@ -445,6 +451,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
         }
     }
 
@@ -537,11 +544,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void connectFriends(MenuItem item) {
+        //already1=false;
+
         try {
             try{
-                progressDialog.setMessage("Szukam ci przyjaciół, poczekaj");
-                progressDialog.show();
+                progressDialogfromMap.setMessage("Szukam ci przyjaciół, poczekaj");
+                progressDialogfromMap.show();
                     startActivity(new Intent(getApplicationContext(), SearchFriendActivity.class));
+                    //already1=true;
               //  }
             }
             catch (Exception e){
@@ -559,11 +569,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void searchForFriends(MenuItem item) {
+        //already2=false;
         try {
             try{
-                progressDialog.setMessage("Prosze czekac");
-                progressDialog.show();
+                progressDialogfromMap.setMessage("Prosze czekac");
+                progressDialogfromMap.show();
                 startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+
                 //  }
             }
             catch (Exception e){

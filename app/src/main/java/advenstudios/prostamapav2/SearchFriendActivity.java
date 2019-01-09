@@ -40,6 +40,7 @@ import java.util.List;
 
 import static advenstudios.prostamapav2.LoginActivity.em;
 import static advenstudios.prostamapav2.LoginActivity.ps;
+//import static advenstudios.prostamapav2.MapsActivity.already1;
 import static advenstudios.prostamapav2.RegisterActivity.email;
 import static advenstudios.prostamapav2.RegisterActivity.pss;
 
@@ -57,10 +58,9 @@ public class SearchFriendActivity extends AppCompatActivity {
     List<String> friendPassw;
 
     User user;
-    User userTest;
     ArrayList<User> userArrayList;
     TextView result;
-    Button mmmButton;
+    //Button mmmButton;
     static String friendsEmail ="nikt@nikt.pl";
     int countFriends;
 
@@ -68,7 +68,7 @@ public class SearchFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_friend);
-        mmmButton = findViewById(R.id.newFriendsButton);
+      //  mmmButton = findViewById(R.id.newFriendsButton);
         connectionClass = new ConnectionClass();
         userList=(ListView)findViewById(R.id.userListId);
         result = (TextView) findViewById(R.id.rezultat);
@@ -80,12 +80,13 @@ public class SearchFriendActivity extends AppCompatActivity {
         friendMail= new ArrayList<String>();
         friendPassw= new ArrayList<String>();
 
-        DoQuery selectUsers = new DoQuery();
-        selectUsers.execute("");
+       // if(!already1) {
+            DoQuery selectUsers = new DoQuery();
+            selectUsers.execute("");
+//            already1=true;
+//        }
 
         userArrayList = new ArrayList<User>();
-        userTest=new User("Andrzej", "Duda","prezydent@xd.pl", "janek123");
-       //  userArrayList.add(userTest);
 
         adapter = new UserAdapter(this, userArrayList);
         userList.setAdapter(adapter);
@@ -108,36 +109,40 @@ public class SearchFriendActivity extends AppCompatActivity {
             t.interrupt();
         } catch (InterruptedException e) {
         }
-
-         //userArrayList.add(new User("adam","tomczak","atomczak30@gmail.com","pppp"));
-
+        MapsActivity.progressDialogfromMap.hide();
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
                 friendsEmail = userArrayList.get(i).getEmail();
-                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                onBackPressed();
+                MapsActivity.mDrawerLayout.closeDrawers();
+                //startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+
+//                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
 
             }
         });
 
     }
 
-    public void dodajKogos(View view) {
-        try{
-
-            for(int i=0; i < countFriends;i++) {
-                userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
-                adapter.notifyDataSetChanged();
-            }
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            result.setText(" c huj xd "+e.getMessage());
-        }
-
-    }
+//    public void dodajKogos(View view) {
+//        try{
+//
+//            for(int i=0; i < countFriends;i++) {
+//                userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//            result.setText(" c huj xd "+e.getMessage());
+//        }
+//
+//    }
 
 public class DoQuery extends AsyncTask<String,String,String>
     {

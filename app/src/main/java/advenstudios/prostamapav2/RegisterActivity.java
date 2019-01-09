@@ -120,18 +120,25 @@ public class RegisterActivity extends AppCompatActivity {
                                  if(isAvailable()){
                                 String query = "INSERT INTO usrs2 VALUES ('" + finame + "', '" + lastNme + "','" + email + "', '" + password + "', 'false', 66.788974, 9.457503)";
                                 //String query="INSERT INTO TodoItem (firstName, lastName) VALUES ('email', 'password+')";
-                                Statement stmt = con.createStatement();
-                                stmt.executeUpdate(query);
-                                openedReg=true;
-                                pss="reg";
-                                z = "Rejestracja pomyślna";
-                                GPSStatus();
+                                 GPSStatus();
                                 if (GpsStatus == true) {
 
+                                    Statement stmt = con.createStatement();
+                                    stmt.executeUpdate(query);
+                                    openedReg=true;
+                                    pss="reg";
+                                    z = "Rejestracja pomyślna";
+
+
+                                    progressDialog.setMessage("Łąduję Mapę, proszę czekać!");
+                                    progressDialog.show();
+
                                     if (statusChanged) {
+                                        progressDialog.setMessage("Łąduję Mapę, proszę czekać!");
+                                        progressDialog.show();
                                         Thread t = new Thread();
                                         try {
-                                            t.sleep(9000);
+                                            t.sleep(10000);
                                             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                             t.interrupt();
                                         } catch (InterruptedException e) {

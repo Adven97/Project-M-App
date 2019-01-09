@@ -85,8 +85,10 @@ public class SearchActivity extends AppCompatActivity {
         friendMail= new ArrayList<String>();
         friendPassw= new ArrayList<String>();
 
-        DoQuery selectUsers = new DoQuery();
-        selectUsers.execute("");
+
+
+//            already2=true;
+
 
         userArrayList = new ArrayList<User>();
         userTest=new User("Andrzej", "Duda","prezydent@xd.pl", "janek123");
@@ -98,24 +100,31 @@ public class SearchActivity extends AppCompatActivity {
 
         userList.setAdapter(adapter);
 
+
+        DoQuery selectUsers = new DoQuery();
+        selectUsers.execute("");
+
         Thread t = new Thread();
         try {
-            t.sleep(2000);
+            t.sleep(3500);
             // progressDialog.hide();
-            try{
-                for(int i=0; i < countFriends;i++) {
+            try {
+                for (int i = 0; i < countFriends; i++) {
                     userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
                     adapter.notifyDataSetChanged();
                 }
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                result.setText(" c huj xd "+e.getMessage());
+                result.setText(" c huj xd " + e.getMessage());
             }
             t.interrupt();
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException e) {}
+
+
+
+
+        MapsActivity.progressDialogfromMap.hide();
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
