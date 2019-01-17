@@ -16,6 +16,9 @@ public class User2 {
     @SerializedName("password")
     String password;
 
+    @SerializedName("usrstatus")
+    String status;
+
     @SerializedName("email")
     String email;
     public User2() {
@@ -29,11 +32,11 @@ public class User2 {
         this.email = email;
     }
 
-    public User2(String name, String lastName, String email, String password ) {
+    public User2(String name, String lastName, String email, String status) {
         this.firstName = name;
         this.lastName = lastName;
-        this.password= password;
         this.email = email;
+        this.status = status;
     }
 
     public User2(String email, String password ) {
@@ -58,6 +61,9 @@ public class User2 {
     public void setEmail(String email){
         this.email = email;
     }
+    public void setStatus(String status){
+        this.status = status;
+    }
 
     //-------------------    getery -----------------------------
 
@@ -75,5 +81,8 @@ public class User2 {
     }
     public String getEmail(){
         return email;
+    }
+    public String getStatus(){
+        return status;
     }
 }

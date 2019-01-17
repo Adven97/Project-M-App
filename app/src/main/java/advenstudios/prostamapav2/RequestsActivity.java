@@ -1,5 +1,6 @@
 package advenstudios.prostamapav2;
 
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,21 +50,20 @@ import static advenstudios.prostamapav2.RegisterActivity.email;
 import static advenstudios.prostamapav2.RegisterActivity.pss;
 
 
-public class SearchActivity extends AppCompatActivity {
+public class RequestsActivity extends AppCompatActivity {
 
-    private ListView userList;
+    private ListView userListaa;
     ConnectionClass connectionClass;
     ProgressDialog progressDialog;
-    UserAdapter adapter;
+    UserAdapter adapterx;
 
-    List<String> firstName;
-    List<String> lastNamee;
-    List<String> friendMail;
-    List<String> friendPassw;
+    List<String> firstNamex;
+    List<String> lastNameex;
+    List<String> friendMailx;
+    List<String> friendPasswx;
 
     User user;
-    User userTest;
-    ArrayList<User> userArrayList;
+    ArrayList<User> userArrayListaa;
     TextView result;
     static String friendsEmail ="nikt@nikt.pl";
     int countFriends;
@@ -75,30 +75,26 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         connectionClass = new ConnectionClass();
-        userList=(ListView)findViewById(R.id.userListIddd);
+        userListaa=(ListView)findViewById(R.id.userListIddd);
         //result = (TextView) findViewById(R.id.rezultattt);
         user=new User();
         progressDialog = new ProgressDialog(this);
 
-        firstName = new ArrayList<String>();
-        lastNamee= new ArrayList<String>();
-        friendMail= new ArrayList<String>();
-        friendPassw= new ArrayList<String>();
+        firstNamex = new ArrayList<String>();
+        lastNameex= new ArrayList<String>();
+        friendMailx= new ArrayList<String>();
+        friendPasswx= new ArrayList<String>();
 
 
+        userArrayListaa = new ArrayList<User>();
 
-//            already2=true;
-
-
-        userArrayList = new ArrayList<User>();
-        userTest=new User("Andrzej", "Duda","prezydent@xd.pl", "janek123");
         //  userArrayList.add(userTest);
 
-        adapter = new UserAdapter(this, userArrayList);
+        adapterx = new UserAdapter(this, userArrayListaa);
 
-        adapterek = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,firstName);
+        adapterek = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,firstNamex);
 
-        userList.setAdapter(adapter);
+        userListaa.setAdapter(adapterx);
 
 
         DoQuery selectUsers = new DoQuery();
@@ -110,8 +106,8 @@ public class SearchActivity extends AppCompatActivity {
             // progressDialog.hide();
             try {
                 for (int i = 0; i < countFriends; i++) {
-                    userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
-                    adapter.notifyDataSetChanged();
+                    userArrayListaa.add(new User(firstNamex.get(i), lastNameex.get(i), friendMailx.get(i), friendPasswx.get(i)));
+                    adapterx.notifyDataSetChanged();
                 }
 
             } catch (Exception e) {
@@ -122,19 +118,12 @@ public class SearchActivity extends AppCompatActivity {
         } catch (InterruptedException e) {}
 
 
-
-
         MapsActivity.progressDialogfromMap.hide();
 
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        userListaa.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
-                if (!checkIfFriend(userArrayList.get(i).getEmail())) {
-                    Toast.makeText(getBaseContext(), "Masz już w znajomych tego usera", Toast.LENGTH_LONG).show();
-                }
-
-                else {
                     try {
                         Connection conon = connectionClass.CONN();
                         if (conon == null) {
@@ -144,96 +133,28 @@ public class SearchActivity extends AppCompatActivity {
                             String query = "";
                             if (ps == "log") {
                                 //  query = " select * from friendss where my_email='" + em + "'";
-                                query = "insert into friendss(my_email, friends_email,accepted) values('" + em + "', '" + userArrayList.get(i).getEmail() + "','false')";
+                                query = "update friendss set accepted='true' where friends_email='"+em+"' and my_email = '" + userArrayListaa.get(i).getEmail() + "'";
                             } else if (pss == "reg") {
                                 //  query = " select * from friendss where my_email='" + email + "'";
-                                query = "insert into friendss(my_email, friends_email, accepted) values('" + email + "', '" + userArrayList.get(i).getEmail() + "','false')";
+                                query = "update friendss set accepted='true' where friends_email='"+email+"' and my_email = '" + userArrayListaa.get(i).getEmail() + "'";
                             }
 
                             Statement stmt = conon.createStatement();
                             stmt.executeUpdate(query);
 
-                            Toast.makeText(getBaseContext(), "Prośba została wysłana ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), "Dodano znajomego do bazy ", Toast.LENGTH_LONG).show();
+                            //SearchFriendActivity.userArrayList.add(new User(firstNamex.get(i), lastNameex.get(i), friendMailx.get(i), friendPasswx.get(i)));
 
                         }
                     } catch (Exception ex) {
                         Toast.makeText(getBaseContext(), "Exception wyjebalo: " + ex, Toast.LENGTH_LONG).show();
                     }
-
                 }
-            }
         });
 
     }
 
-    boolean checkIfFriend(String danyUser){
 
-        String query="";
-        boolean b=true;
-
-        try {
-            Connection con = connectionClass.CONN();
-            if (con == null) {
-                Toast.makeText(getBaseContext(),"nie udalo sie  połaczyć niestety xD",Toast.LENGTH_LONG).show();
-            }
-            else {
-                if(ps=="log") {
-                    query = "select friends_email from friendss where my_email='" + em + "'";
-                }
-                else if(pss=="reg") {
-                    query = "select friends_email from friendss where my_email='" + email + "'";
-                }
-                //  query = "select * from usrs2 where email in (select friends_email from friendss where my_email='atomczak30@gmail.com')";
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery(query);
-
-                countFriends=0;
-                while (rs.next())
-                {
-                    friendMail.add(rs.getString(1));
-                    countFriends++;
-                }
-
-                for(int i=0; i < countFriends;i++) {
-                    if(friendMail.get(i) == danyUser){
-                        b=false;
-                    }
-                }
-
-            }
-        }
-        catch (Exception ex)
-        {
-            Toast.makeText(getBaseContext(),"Exception wyjebalo: "+ex,Toast.LENGTH_LONG).show();
-        }
-
-        return b;
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.search_menu, menu);
-
-        MenuItem itemm = menu.findItem(R.id.search_menu);
-        SearchView searchView = (SearchView)itemm.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                adapterek.getFilter().filter(s);
-                return false;
-            }
-        });
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
 
     public class DoQuery extends AsyncTask<String,String,String>
@@ -256,8 +177,13 @@ public class SearchActivity extends AppCompatActivity {
                     z = "nie udalo sie  połaczyć niestety xD";
                 }
                 else {
+                    if(ps=="log") {
+                        query = "select * from usrs2 where email in( select my_email from friendss where friends_email='" + em + "' and accepted='false')";
+                    }
+                    else if(pss=="reg") {
+                        query = "select * from usrs2 where email in( select my_email from friendss where friends_email='" + email + "' and accepted='false')";
+                    }
 
-                    query = "select * from usrs2";
 
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
@@ -265,10 +191,10 @@ public class SearchActivity extends AppCompatActivity {
                     countFriends=0;
                     while (rs.next())
                     {
-                        firstName.add(rs.getString(2));
-                        lastNamee.add(rs.getString(3));
-                        friendMail.add(rs.getString(4));
-                        friendPassw.add(rs.getString(5));
+                        firstNamex.add(rs.getString(2));
+                        lastNameex.add(rs.getString(3));
+                        friendMailx.add(rs.getString(4));
+                        friendPasswx.add(rs.getString(6));
                         countFriends++;
                     }
 
@@ -284,10 +210,8 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String s) {}
 
-            //  Toast.makeText(getBaseContext(),"bum "+z,Toast.LENGTH_LONG).show();
-        }
     }
 
 }

@@ -1,6 +1,7 @@
 package advenstudios.prostamapav2;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,28 +42,38 @@ import java.util.List;
 import static advenstudios.prostamapav2.LoginActivity.em;
 import static advenstudios.prostamapav2.LoginActivity.ps;
 //import static advenstudios.prostamapav2.MapsActivity.already1;
+import static advenstudios.prostamapav2.MapsActivity.activeUsr;
 import static advenstudios.prostamapav2.RegisterActivity.email;
 import static advenstudios.prostamapav2.RegisterActivity.pss;
+import static advenstudios.prostamapav2.UserAdapter.kolorek;
 
 
 public class SearchFriendActivity extends AppCompatActivity {
 
-    private ListView userList;
+   // private ListView userList;
+    private ListView userList2;
+
     ConnectionClass connectionClass;
     ProgressDialog progressDialog;
     UserAdapter adapter;
 
-    List<String> firstName;
-    List<String> lastNamee;
-    List<String> friendMail;
-    List<String> friendPassw;
+    private ListView userList3;
+    UserAdapter adapter2;
+    ArrayList<User> userArrayList2;
+
+    List<String> firstName, firstName2;
+    List<String> lastNamee, lastNamee2;
+    List<String> friendMail, friendMail2;
+    List<String> friendStatus, friendStatus2;
 
     User user;
-    ArrayList<User> userArrayList;
+    static ArrayList<User> userArrayList;
+
     TextView result;
     //Button mmmButton;
     static String friendsEmail ="nikt@nikt.pl";
     int countFriends;
+    int countFriends2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,26 +81,34 @@ public class SearchFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_friend);
       //  mmmButton = findViewById(R.id.newFriendsButton);
         connectionClass = new ConnectionClass();
-        userList=(ListView)findViewById(R.id.userListId);
-        result = (TextView) findViewById(R.id.rezultat);
+      //  userList=(ListView)findViewById(R.id.userListId);
+        userList2=(ListView)findViewById(R.id.userListId);
+        userList3=(ListView)findViewById(R.id.userListId2);
+        //result = (TextView) findViewById(R.id.rezultat);
         user=new User();
         progressDialog = new ProgressDialog(this);
 
         firstName = new ArrayList<String>();
         lastNamee= new ArrayList<String>();
         friendMail= new ArrayList<String>();
-        friendPassw= new ArrayList<String>();
+        friendStatus= new ArrayList<String>();
 
-       // if(!already1) {
-            DoQuery selectUsers = new DoQuery();
-            selectUsers.execute("");
-//            already1=true;
-//        }
+        firstName2 = new ArrayList<String>();
+        lastNamee2= new ArrayList<String>();
+        friendMail2= new ArrayList<String>();
+        friendStatus2= new ArrayList<String>();
+
+        DoQuery selectUsers = new DoQuery();
+        selectUsers.execute("");
+
 
         userArrayList = new ArrayList<User>();
-
         adapter = new UserAdapter(this, userArrayList);
-        userList.setAdapter(adapter);
+        userList2.setAdapter(adapter);
+
+        userArrayList2 = new ArrayList<User>();
+        adapter2 = new UserAdapter(this, userArrayList2);
+        userList3.setAdapter(adapter2);
 
         Thread t = new Thread();
         try {
@@ -97,10 +116,23 @@ public class SearchFriendActivity extends AppCompatActivity {
            // progressDialog.hide();
             try{
                 for(int i=0; i < countFriends;i++) {
-                    userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
-                    adapter.notifyDataSetChanged();
+                    if(friendStatus.get(i).equals("true")) {
+                        userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendStatus.get(i)));
+                        adapter.notifyDataSetChanged();
+                        userList2.setBackgroundColor(Color.parseColor("#ADFF2F"));
+                    }
+                    else {
+                        userArrayList2.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendStatus.get(i)));
+                        adapter2.notifyDataSetChanged();
+                        userList3.setBackgroundColor(Color.parseColor("#FF0000"));
+                    }
                 }
-
+//                for(int i=0; i < countFriends;i++) {
+//                    userArrayList2.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendStatus.get(i)));
+//                    adapter2.notifyDataSetChanged();
+//                    userList3.setBackgroundColor(Color.parseColor("#ff4400"));
+//                }
+                //userList.getChildAt(0).setBackgroundColor(Color.parseColor("#FF4500"));
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -111,41 +143,50 @@ public class SearchFriendActivity extends AppCompatActivity {
         }
         MapsActivity.progressDialogfromMap.hide();
 
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+
+        userList2.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-                friendsEmail = userArrayList.get(i).getEmail();
-                onBackPressed();
-                MapsActivity.mDrawerLayout.closeDrawers();
-                //startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-
-//                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-
+                if(activeUsr ) {
+                    if (userArrayList.get(i).getStatus().equals("true")) {
+                        friendsEmail = userArrayList.get(i).getEmail();
+                        onBackPressed();
+                        MapsActivity.mDrawerLayout.closeDrawers();
+                    } else {
+                        Toast.makeText(getBaseContext(), "Użytkownik nie jest dostępny ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "Musisz być aktywny by śledzić innych!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
     }
 
-//    public void dodajKogos(View view) {
-//        try{
-//
-//            for(int i=0; i < countFriends;i++) {
-//                userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendPassw.get(i)));
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//            result.setText(" c huj xd "+e.getMessage());
-//        }
-//
-//    }
+    public void dodajKogos(View view) {
+        try{
+            userArrayList.clear();
+            for(int i=0; i < countFriends;i++) {
+                if(friendStatus.get(i) == "true") {
+                    userArrayList.add(new User(firstName.get(i), lastNamee.get(i), friendMail.get(i), friendStatus.get(i)));
+                    adapter.notifyDataSetChanged();
+                }
+//                else {
+//                    userArrayList.remove(i);
+//                }
+            }
 
-public class DoQuery extends AsyncTask<String,String,String>
-    {
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            result.setText(" c huj xd "+e.getMessage());
+        }
+
+    }
+
+public class DoQuery extends AsyncTask<String,String,String>{
 
         String z="";
         boolean isSuccess=false;
@@ -157,6 +198,7 @@ public class DoQuery extends AsyncTask<String,String,String>
         protected String doInBackground(String... params) {
 
             String query="";
+            String query2="";
 
             try {
                 Connection con = connectionClass.CONN();
@@ -166,11 +208,13 @@ public class DoQuery extends AsyncTask<String,String,String>
                 else {
                     if(ps=="log") {
                       //  query = " select * from friendss where my_email='" + em + "'";
-                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + em + "')";
+                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + em + "' and accepted='true')";
+                        query2 = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + em + "' and accepted='true')";
                     }
                     else if(pss=="reg") {
                       //  query = " select * from friendss where my_email='" + email + "'";
-                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + email + "')";
+                        query = "select * from usrs2 where email in (select friends_email from friendss where my_email='" + email + "' and accepted='true')";
+                        query2 = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + email + "' and accepted='true')";
                     }
                   //  query = "select * from usrs2 where email in (select friends_email from friendss where my_email='atomczak30@gmail.com')";
                     Statement stmt = con.createStatement();
@@ -182,9 +226,10 @@ public class DoQuery extends AsyncTask<String,String,String>
                         firstName.add(rs.getString(2));
                         lastNamee.add(rs.getString(3));
                         friendMail.add(rs.getString(4));
-                        friendPassw.add(rs.getString(5));
+                        friendStatus.add(rs.getString(6));
                         countFriends++;
                     }
+
 
                 }
             }
@@ -203,5 +248,58 @@ public class DoQuery extends AsyncTask<String,String,String>
             //  Toast.makeText(getBaseContext(),"bum "+z,Toast.LENGTH_LONG).show();
         }
     }
+
+
+//    public class DoQuery2 extends AsyncTask<String,String,String>{
+//
+//        String z="";
+//        boolean isSuccess=false;
+//
+//        @Override
+//        protected void onPreExecute() {}
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//
+//            String query="";
+//            try {
+//                Connection con = connectionClass.CONN();
+//                if (con == null) {
+//                    z = "nie udalo sie  połaczyć niestety xD";
+//                }
+//                else {
+//                    if(ps=="log") {
+//                        query = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + em + "' and accepted='true')";
+//                    }
+//                    else if(pss=="reg") {
+//                        query = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + email + "' and accepted='true')";
+//                    }
+//
+//
+//                    Statement stmt2 = con.createStatement();
+//                    ResultSet rs2 = stmt2.executeQuery(query);
+//                    countFriends2=0;
+//                    while (rs2.next())
+//                    {
+//                        firstName2.add(rs2.getString(2));
+//                        lastNamee2.add(rs2.getString(3));
+//                        friendMail2.add(rs2.getString(4));
+//                        friendStatus2.add(rs2.getString(6));
+//                        countFriends2++;
+//                    }
+//
+//                }
+//            }
+//            catch (Exception ex)
+//            {
+//                isSuccess = false;
+//                z = "Exception wyjebalo: "+ex;
+//            }
+//            return z;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {}
+//    }
 
 }

@@ -23,14 +23,14 @@
             <!--android:onClick="dodajKogos"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:text="Button" />-->
+            <!--android:text="Szukaj aktywnych" />-->
 
-        <TextView
-            android:id="@+id/rezultat"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#FFFFFF"
-            android:text="TextView" />
+        <!--<TextView-->
+            <!--android:id="@+id/rezultat"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textColor="#FFFFFF"-->
+            <!--android:text="TextView" />-->
 
     </TableRow>
     <TableRow
@@ -41,9 +41,26 @@
         <ListView
             android:id="@+id/userListId"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1">
 
         </ListView>
-    </TableRow>
+
+</TableRow>
+
+<TableRow
+android:id="@+id/tableRow3"
+android:layout_width="match_parent"
+android:layout_height="wrap_content" >
+
+<ListView
+    android:id="@+id/userListId2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+</ListView>
+
+</TableRow>
+
 </TableLayout>

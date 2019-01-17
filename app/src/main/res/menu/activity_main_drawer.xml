@@ -6,8 +6,12 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/action_mode_bar"
-            android:title="Your friends"
+            android:title="Your active friends"
             android:onClick="connectFriends"/>
+        <item
+            android:id="@+id/nav_came"
+            android:title="Friend's requests"
+            android:onClick="requests"/>
         <item
             android:id="@+id/nav_camera"
             android:title="Find new friend"

@@ -3,6 +3,7 @@ package advenstudios.prostamapav2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ public class UserAdapter extends BaseAdapter {
     Activity context;
     ArrayList<User> users;
     private static LayoutInflater inflater = null;
+    static boolean kolorek;
 
     public UserAdapter(Activity context, ArrayList<User> users){
         this.context=context;
         this.users=users;
+
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -39,11 +42,22 @@ public class UserAdapter extends BaseAdapter {
     public View getView(int nr, View convertView, ViewGroup parent){
         View itemView = convertView;
         itemView = (itemView==null)? inflater.inflate(R.layout.adapter, null) : itemView;
-        TextView tvImie = (TextView)itemView.findViewById(R.id.Imie);
-        TextView tvNazwisko = (TextView)itemView.findViewById(R.id.Nazwisko);
+
+            TextView tvImie = (TextView) itemView.findViewById(R.id.Imie);
+            TextView tvNazwisko = (TextView) itemView.findViewById(R.id.Nazwisko);
+
         User selectedKontakt = users.get(nr);
         tvImie.setText(selectedKontakt.getFirstName());
         tvNazwisko.setText(selectedKontakt.getLastName());
+//        if(kolorek) {
+//            tvImie.setBackgroundColor(Color.parseColor("#ADFF2F"));
+//            tvNazwisko.setBackgroundColor(Color.parseColor("#ADFF2F"));
+//
+//        }
+//        else {
+//            tvImie.setBackgroundColor(Color.parseColor("#FF4500"));
+//            tvNazwisko.setBackgroundColor(Color.parseColor("#FF4500"));
+//        }
         return itemView;
     }
 

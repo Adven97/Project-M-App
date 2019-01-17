@@ -116,7 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     ConnectionClass connectionClass;
     Button toggleButton;
-    boolean activeUsr;
+   static boolean activeUsr;
 
 //    static boolean already1;
 //    static boolean already2;
@@ -590,6 +590,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             textView.setText("chuj i pizda: "+e.getMessage().toString());
         }
 
+    }
+    public void requests(MenuItem item) {
+        //already2=false;
+        try {
+            try{
+                progressDialogfromMap.setMessage("Prosze czekac");
+                progressDialogfromMap.show();
+                startActivity(new Intent(getApplicationContext(), RequestsActivity.class));
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            textView.setText("chuj i pizda: "+e.getMessage().toString());
+        }
     }
 
     public void onTButtonClick(View view) {
