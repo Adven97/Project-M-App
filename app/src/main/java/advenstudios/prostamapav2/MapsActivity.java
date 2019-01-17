@@ -317,12 +317,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful()==true) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
 
-                            geoLat = mLastKnownLocation.getLatitude();
-                            geoLong = mLastKnownLocation.getLongitude();
+                            progressDialogfromMap.setMessage("Ładuję mapę, proszę czekać");
+                            progressDialogfromMap.show();
+                            Thread t = new Thread();
+                            try {
+                                t.sleep(3000);
+                                // progressDialog.hide();
+                                try {
+                                    geoLat = mLastKnownLocation.getLatitude();
+                                    geoLong = mLastKnownLocation.getLongitude();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                t.interrupt();
+                            } catch (InterruptedException e) {}
+                            progressDialogfromMap.hide();
                             InsertPosToDb insertPosToDb = new InsertPosToDb();
                             insertPosToDb.execute("");
 
