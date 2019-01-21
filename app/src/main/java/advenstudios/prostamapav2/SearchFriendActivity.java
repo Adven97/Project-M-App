@@ -112,7 +112,7 @@ public class SearchFriendActivity extends AppCompatActivity {
 
         Thread t = new Thread();
         try {
-            t.sleep(3000);
+            t.sleep(5000);
            // progressDialog.hide();
             try{
                 for(int i=0; i < countFriends;i++) {
@@ -136,30 +136,34 @@ public class SearchFriendActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
-                result.setText(" c huj xd "+e.getMessage());
+                result.setText("eror "+e.getMessage());
             }
             t.interrupt();
         } catch (InterruptedException e) {
         }
         MapsActivity.progressDialogfromMap.hide();
 
-
-
         userList2.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
                 if(activeUsr ) {
-                    if (userArrayList.get(i).getStatus().equals("true")) {
+                   // if (userArrayList.get(i).getStatus().equals("true")) {
                         friendsEmail = userArrayList.get(i).getEmail();
                         onBackPressed();
                         MapsActivity.mDrawerLayout.closeDrawers();
-                    } else {
-                        Toast.makeText(getBaseContext(), "Użytkownik nie jest dostępny ", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
                 else {
-                    Toast.makeText(getBaseContext(), "Musisz być aktywny by śledzić innych!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Musisz być aktywny by śledzić innych!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        userList3.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+                    Toast.makeText(getBaseContext(), "Użytkownik nie jest dostępny", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -249,57 +253,5 @@ public class DoQuery extends AsyncTask<String,String,String>{
         }
     }
 
-
-//    public class DoQuery2 extends AsyncTask<String,String,String>{
-//
-//        String z="";
-//        boolean isSuccess=false;
-//
-//        @Override
-//        protected void onPreExecute() {}
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//
-//            String query="";
-//            try {
-//                Connection con = connectionClass.CONN();
-//                if (con == null) {
-//                    z = "nie udalo sie  połaczyć niestety xD";
-//                }
-//                else {
-//                    if(ps=="log") {
-//                        query = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + em + "' and accepted='true')";
-//                    }
-//                    else if(pss=="reg") {
-//                        query = "select * from usrs2 where usrstatus='false' and email in (select friends_email from friendss where my_email='" + email + "' and accepted='true')";
-//                    }
-//
-//
-//                    Statement stmt2 = con.createStatement();
-//                    ResultSet rs2 = stmt2.executeQuery(query);
-//                    countFriends2=0;
-//                    while (rs2.next())
-//                    {
-//                        firstName2.add(rs2.getString(2));
-//                        lastNamee2.add(rs2.getString(3));
-//                        friendMail2.add(rs2.getString(4));
-//                        friendStatus2.add(rs2.getString(6));
-//                        countFriends2++;
-//                    }
-//
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                isSuccess = false;
-//                z = "Exception wyjebalo: "+ex;
-//            }
-//            return z;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {}
-//    }
 
 }

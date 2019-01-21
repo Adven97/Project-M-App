@@ -65,7 +65,6 @@ public class RequestsActivity extends AppCompatActivity {
     User user;
     ArrayList<User> userArrayListaa;
     TextView result;
-    static String friendsEmail ="nikt@nikt.pl";
     int countFriends;
 
     ArrayAdapter<String> adapterek;
@@ -142,7 +141,7 @@ public class RequestsActivity extends AppCompatActivity {
                             Statement stmt = conon.createStatement();
                             stmt.executeUpdate(query);
 
-                            Toast.makeText(getBaseContext(), "Dodano znajomego do bazy ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), "Ten użytkownik może cię teraz śledzić", Toast.LENGTH_SHORT).show();
                             //SearchFriendActivity.userArrayList.add(new User(firstNamex.get(i), lastNameex.get(i), friendMailx.get(i), friendPasswx.get(i)));
 
                         }

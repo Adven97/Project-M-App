@@ -26,7 +26,7 @@ import java.sql.Statement;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    TextView textView;
+   // TextView textView;
     Button mButton, cancelButton;
     Context context;
     Intent intent1;
@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         context = getApplicationContext();
         mButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
-        textView = (TextView) findViewById(R.id.textView);
+        //textView = (TextView) findViewById(R.id.textView);
 
         connectionClass = new ConnectionClass();
         //  getSupportActionBar().hide();
@@ -183,7 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (isSuccess) {
                 //startActivity(new Intent(MainActivity.this,Main2Activity.class));
-                Toast.makeText(getBaseContext(), "nooo jest git jest git ", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Witamy w MApp", Toast.LENGTH_LONG).show();
             }
 
             progressDialog.hide();

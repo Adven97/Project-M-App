@@ -106,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
 
         Thread t = new Thread();
         try {
-            t.sleep(3500);
+            t.sleep(8000);
             // progressDialog.hide();
             try {
                 for (int i = 0; i < countFriends; i++) {
@@ -116,16 +116,14 @@ public class SearchActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                result.setText(" c huj xd " + e.getMessage());
+                result.setText("cos sie popsulo " + e.getMessage());
             }
             t.interrupt();
         } catch (InterruptedException e) {}
 
 
 
-
         MapsActivity.progressDialogfromMap.hide();
-
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
@@ -159,7 +157,6 @@ public class SearchActivity extends AppCompatActivity {
                     } catch (Exception ex) {
                         Toast.makeText(getBaseContext(), "Exception wyjebalo: " + ex, Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
         });
@@ -204,7 +201,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         catch (Exception ex)
         {
-            Toast.makeText(getBaseContext(),"Exception wyjebalo: "+ex,Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(),"Exception : "+ex,Toast.LENGTH_LONG).show();
         }
 
         return b;
@@ -256,8 +253,12 @@ public class SearchActivity extends AppCompatActivity {
                     z = "nie udalo sie  połaczyć niestety xD";
                 }
                 else {
-
-                    query = "select * from usrs2";
+                    if(ps=="log") {
+                        query = "select * from usrs2 where email !='"+em+"'";
+                    }
+                    if(ps=="reg") {
+                        query = "select * from usrs2 where email !='"+email+"'";
+                    }
 
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);

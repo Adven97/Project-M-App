@@ -231,9 +231,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
-
-
     /**
      * Saves the state of the map when the activity is paused.
      */
@@ -342,7 +339,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(geoLat,geoLong), DEFAULT_ZOOM));
 
-                            textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
+                            textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
@@ -386,7 +383,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             InsertPosToDb insertPosToDb = new InsertPosToDb();
                             insertPosToDb.execute("");
 
-                            textView.setText(em+" Twoje aktualne położenie: "+geoLat+ " , " +geoLong);
+                            textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             dodajNowyMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
@@ -569,14 +566,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             catch (Exception e){
                 e.printStackTrace();
-                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+                textView.setText("Cos sie sie cos popsulo: "+e.getMessage().toString());
             }
 
         }
         catch (Exception e){
 
             e.printStackTrace();
-            textView.setText("chuj i pizda: "+e.getMessage().toString());
+            textView.setText("Erorrr: "+e.getMessage().toString());
         }
 
     }
@@ -593,14 +590,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             catch (Exception e){
                 e.printStackTrace();
-                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+                textView.setText("Cos sie sie cos popsulo: "+e.getMessage().toString());
             }
 
         }
         catch (Exception e){
 
             e.printStackTrace();
-            textView.setText("chuj i pizda: "+e.getMessage().toString());
+            textView.setText("Errrorrr: "+e.getMessage().toString());
         }
 
     }
@@ -614,12 +611,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             catch (Exception e){
                 e.printStackTrace();
-                textView.setText("chuj cos sie sie cos popsulo: "+e.getMessage().toString());
+                textView.setText("cos sie sie cos popsulo: "+e.getMessage().toString());
             }
         }
         catch (Exception e){
             e.printStackTrace();
-            textView.setText("chuj i pizda: "+e.getMessage().toString());
+            textView.setText("Mamy problem: "+e.getMessage().toString());
         }
     }
 

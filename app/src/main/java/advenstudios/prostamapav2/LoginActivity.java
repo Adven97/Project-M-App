@@ -26,7 +26,7 @@ import java.sql.Statement;
 
 public class LoginActivity extends AppCompatActivity {
 
-    TextView textView;
+   // TextView textView;
     Button mButton, cancelButton;
     Context context;
     Intent intent1;
@@ -49,14 +49,14 @@ public class LoginActivity extends AppCompatActivity {
         context = getApplicationContext();
         mButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
-        textView = (TextView) findViewById(R.id.textView2);
+        //textView = (TextView) findViewById(R.id.textView2);
 
         connectionClass = new ConnectionClass();
        // openedLogin=false;
 
-        getSupportActionBar().hide();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getSupportActionBar().hide();
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         progressDialog=new ProgressDialog(this);
 
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -112,15 +112,15 @@ public class LoginActivity extends AppCompatActivity {
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                     z="chuj "+e.getMessage().toString();
+                     z="exeption 1 "+e.getMessage().toString();
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                 z="chuj 2  "+e.getMessage();
+                 z="exeption 2  "+e.getMessage();
 
             } catch (Exception e) {
                 e.printStackTrace();
-                z=" c h uj 434 "+e.getMessage();
+                z=" exeption 3"+e.getMessage();
             }
             //Toast.makeText(getBaseContext(),""+wiad,Toast.LENGTH_LONG).show();
             return conn;
@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                     isSuccess = false;
                     z = "Exceptions: "+ex;
                 }
-            textView.setText(z);
+          //  textView.setText(z);
             return z;
         }
 

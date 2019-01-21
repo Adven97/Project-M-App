@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 
-    Button mButton, rButton, lButton;
+    Button  rButton, lButton;
     Context context;
     Intent intent1;
     TextView textview;
@@ -27,44 +27,44 @@ public class MainActivity extends FragmentActivity {
         textview = (TextView)findViewById(R.id.textView);
         context = getApplicationContext();
 
-        mButton = findViewById(R.id.mybutton);
+      //  mButton = findViewById(R.id.mybutton);
         rButton = findViewById(R.id.registerButton);
         lButton = findViewById(R.id.loginButton);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                GPSStatus();
-                intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-
-                if (GpsStatus == true) {
-
-                    if (statusChanged) {
-                       // textview.setText("WAIT");
-                        Thread t = new Thread();
-                        try {
-                            t.sleep(9000);
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                            t.interrupt();
-                        } catch (InterruptedException e) {}
-
-
-                    }
-                    else {
-                        textview.setText("Welcome to (M)App ! ");
-                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                    }
-                }
-
-                else {
-                      textview.setText("Location Services Is Disabled, Please turn it on ");
-                      startActivity(intent1);
-                      statusChanged=true;
-                    }
-
-                }
-
-        });
+//        mButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//
+//                GPSStatus();
+//                intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//
+//                if (GpsStatus == true) {
+//
+//                    if (statusChanged) {
+//                       // textview.setText("WAIT");
+//                        Thread t = new Thread();
+//                        try {
+//                            t.sleep(9000);
+//                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+//                            t.interrupt();
+//                        } catch (InterruptedException e) {}
+//
+//
+//                    }
+//                    else {
+//                        textview.setText("Welcome to (M)App ! ");
+//                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+//                    }
+//                }
+//
+//                else {
+//                      textview.setText("Location Services Is Disabled, Please turn it on ");
+//                      startActivity(intent1);
+//                      statusChanged=true;
+//                    }
+//
+//                }
+//
+//        });
 
         rButton.setOnClickListener(new View.OnClickListener() {
             @Override
