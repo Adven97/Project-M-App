@@ -1,48 +1,38 @@
 package advenstudios.prostamapav2;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
+
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.IntentSender;
+
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.provider.Settings;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -60,7 +50,7 @@ import com.google.android.gms.tasks.Task;
 /**
  * An activity that displays a map showing the place at the device's current location.
  */
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -93,6 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     PendingResult<LocationSettingsResult> result;
     final static int REQUEST_LOCATION = 199;
+    boolean wasCentered =false;
 
     Marker marker;
 
@@ -123,14 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        textView = (TextView) findViewById(R.id.textView);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).build();
-
-        mGoogleApiClient.connect();
+        //textView = (TextView) findViewById(R.id.textView22);
 
         activeUsr=false;
 
@@ -194,7 +178,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                          runOnUiThread(new Runnable() {
                              @Override public void run() {
 
-                                 getDeviceChangedLocation();
+                                 getDeviceLocation();
 
 
                              } }); } catch (InterruptedException e) {} } } };
@@ -221,70 +205,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             progressDialogfromMap.setMessage("Ładuję mapę, proszę czekać");
                             progressDialogfromMap.show();
-                            Thread t = new Thread();
-                            try {
-                                t.sleep(3000);
-                                // progressDialog.hide();
-                                try {
-                                    geoLat = mLastKnownLocation.getLatitude();
-                                    geoLong = mLastKnownLocation.getLongitude();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                t.interrupt();
-                            } catch (InterruptedException e) {}
-                            progressDialogfromMap.hide();
-
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(geoLat,geoLong), DEFAULT_ZOOM));
-
-                            textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
-
-                            dodajNowyMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
-
-                            markerNumber++;
-                        }
-                        else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(bauty, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    private void getDeviceChangedLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
 
                             geoLat = mLastKnownLocation.getLatitude();
                             geoLong = mLastKnownLocation.getLongitude();
-                           // InsertPosToDb insertPosToDb = new InsertPosToDb();
-                           // insertPosToDb.execute("");
 
-                            textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
+                            progressDialogfromMap.hide();
 
-                            dodajNowyMarker(geoLat,geoLong, BitmapDescriptorFactory.fromResource(R.drawable.emoji));
+                            if(!wasCentered) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(geoLat, geoLong), DEFAULT_ZOOM));
+                                wasCentered=true;
+                            }
+                          //  textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
+
+                            addNewMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
                             markerNumber++;
-
                         }
                         else {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -375,7 +311,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void dodajNowyMarker( double geoLat, double geoLong, BitmapDescriptor myIcon){
+    private void addNewMarker(double geoLat, double geoLong, BitmapDescriptor myIcon){
 
         if(marker != null && markerNumber > 0){
             marker.remove();}
@@ -388,18 +324,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .icon(icon));
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 }
