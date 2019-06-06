@@ -9,7 +9,6 @@ import android.location.Location;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,8 +24,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,7 +53,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     double geoLong, geoLat;
-    static ProgressDialog progressDialogfromMap;
 
     Thread tMyLoc;
     // The entry point to the Fused Location Provider.
@@ -79,24 +75,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView textView;
     int markerNumber=0;
 
-    LocationRequest mLocationRequest;
-    GoogleApiClient mGoogleApiClient;
-    PendingResult<LocationSettingsResult> result;
-    final static int REQUEST_LOCATION = 199;
     boolean wasCentered =false;
 
     Marker marker;
 
     static DrawerLayout mDrawerLayout;
-   static boolean activeUsr;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-     //   connectionClass = new ConnectionClass();
-        progressDialogfromMap = new ProgressDialog(this);
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -110,25 +99,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //textView = (TextView) findViewById(R.id.textView22);
-
-        activeUsr=false;
+        textView = (TextView) findViewById(R.id.textView22);
 
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * Saves the state of the map when the activity is paused.
      */
@@ -145,25 +121,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
      */
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            @Override
-            // Return null here, so that getInfoContents() is called next.
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                return null;
-            }
-        });
 
         getLocationPermission();
         updateLocationUI();
@@ -174,12 +135,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tMyLoc=new Thread(){
             @Override public void run(){
                 while(!isInterrupted()){
-                    try { Thread.sleep(1000); //1000ms = 1 sec
+                    try { Thread.sleep(250); //1000ms = 1 sec
                          runOnUiThread(new Runnable() {
                              @Override public void run() {
 
                                  getDeviceLocation();
-
 
                              } }); } catch (InterruptedException e) {} } } };
         tMyLoc.start();
@@ -188,6 +148,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
+
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -203,20 +164,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
 
-                            progressDialogfromMap.setMessage("Ładuję mapę, proszę czekać");
-                            progressDialogfromMap.show();
-
                             geoLat = mLastKnownLocation.getLatitude();
                             geoLong = mLastKnownLocation.getLongitude();
-
-                            progressDialogfromMap.hide();
 
                             if(!wasCentered) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(geoLat, geoLong), DEFAULT_ZOOM));
                                 wasCentered=true;
                             }
-                          //  textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
+                            textView.setText("Aktualne położenie: "+geoLat+ " , " +geoLong);
 
                             addNewMarker(geoLat,geoLong,BitmapDescriptorFactory.fromResource(R.drawable.emoji));
 
@@ -240,6 +196,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Prompts the user for permission to use the device location.
      */
+
     private void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
@@ -264,12 +221,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * Handles the result of the request for location permissions.
-     */
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION : {
@@ -279,8 +232,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(this,
                             "permission was granted  :)",
                             Toast.LENGTH_LONG).show();
-                    //getMyLocation();
-
                 }
                 updateLocationUI();
             }
@@ -290,6 +241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
+
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -318,10 +270,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         BitmapDescriptor icon = myIcon;
         LatLng other = new LatLng(geoLat,geoLong);
-        marker = mMap.addMarker(new MarkerOptions().position(other)
-                .title("You're here")
-                .snippet("")
-                .icon(icon));
+        marker = mMap.addMarker(new MarkerOptions().position(other).title("You're here").icon(icon));
     }
 
 }
